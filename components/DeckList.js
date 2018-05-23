@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
-import { View, Text, FlatList } from 'react-native'
+import { View, Text, FlatList, StyleSheet } from 'react-native'
 import { AppLoading } from 'expo'
 import LiteDeck from './LiteDeck'
 import TextButton from './TextButton'
 import Storage from '../utils/storage_api'
+import { create, buttonText, uiText } from '../utils/colors'
 
 class DeckList extends Component {
   state = {
@@ -11,18 +12,17 @@ class DeckList extends Component {
     loading: true
   }
 
+  static navigationOptions = {
+    title: 'Mobile Flashcards',
+  }
+
   fetchDecks = () => {
     this.setState({ loading: true })
 
     return Storage.getDecks()
       .then((decks) => {
-        console.log(decks)
         this.setState({ decks, loading: false })
       })
-  }
-
-  componentDidMount() {
-    this.fetchDecks()
   }
 
   render() {
@@ -31,24 +31,41 @@ class DeckList extends Component {
     }
 
     return (
-      <View>
-        <TextButton text='Create Deck'
-                    onPress={this.onCreateDeckPress} />
-        <FlatList data={Object.keys(this.state.decks)}
-                  keyExtractor={(item, index) => `${index}`}
-                  renderItem={({item}) => (
-                    <LiteDeck {...this.state.decks[item]}
-                              id={item}
-                              goToDeck={this.goToDeck} />
-                  )}/>
+      <View style={styles.container}>
+        <View style={styles.controls}>
+          <TextButton text='Create Deck'
+                      bgColor={create}
+                      textColor={buttonText}
+                      onPress={this.onCreateDeckPress} />
+        </View>
+        <View style={styles.content}>
+          <FlatList data={Object.keys(this.state.decks)}
+                    ListEmptyComponent={this.renderEmptyList}
+                    keyExtractor={(item, index) => `${index}`}
+                    renderItem={({item}) => (
+                      <LiteDeck {...this.state.decks[item]}
+                                id={item}
+                                goToDeck={this.goToDeck} />
+                    )}/>
+        </View>
+      </View>
+    )
+  }
+
+  renderEmptyList() {
+    return (
+      <View style={styles.message}>
+        <Text style={styles.messageText}>You don't have any Decks yet. Tap the Create Deck button to add one.</Text>
       </View>
     )
   }
 
   goToDeck = (id) => {
-    this.props.navigation.navigate('Deck', {
-      ...this.state.decks[id], id,
-      goToDeck: this.goToDeck
+    return this.fetchDecks().then(() => {
+      return this.props.navigation.push('Deck', {
+        ...this.state.decks[id], id,
+        goToDeck: this.goToDeck,
+      })
     })
   }
 
@@ -63,5 +80,29 @@ class DeckList extends Component {
     this.goToDeck(deckId)
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    marginTop: 10,
+    flex: 1,
+  },
+  content: {
+    flex: 3,
+    marginTop: 10
+  },
+  controls: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginRight: 10
+  },
+  message: {
+    flex: 5,
+    alignItems: 'center',
+    padding: 10,
+  },
+  messageText: {
+    color: uiText
+  }
+})
 
 export default DeckList

@@ -3,6 +3,10 @@ import capitalize from 'capitalize'
 
 export const DECK_STORAGE_KEY = 'MobileFlashcards:Decks'
 
+const clean = () => {
+  return AsyncStorage.removeItem(DECK_STORAGE_KEY)
+}
+
 const getDecks = () => {
   return AsyncStorage.getItem(DECK_STORAGE_KEY)
     .then((results) => {
@@ -47,4 +51,4 @@ const addCard = (deckKey, card) => {
           })
 }
 
-export default { getDecks, getDeck, addCard, addDeck }
+export default { clean, getDecks, getDeck, addCard, addDeck }

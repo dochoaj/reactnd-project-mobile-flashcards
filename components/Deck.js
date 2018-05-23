@@ -1,13 +1,23 @@
 import React, { Component } from 'react'
-import { View, Text } from 'react-native'
+import { View, Text, StyleSheet } from 'react-native'
 import { AppLoading } from 'expo'
+import shuffle from 'shuffle-array'
 import TextButton from './TextButton'
 import Storage from '../utils/storage_api'
+import { create, buttonText, uiText, correct } from '../utils/colors'
 
 class Deck extends Component {
   state = {
     deck: {},
     loading: true
+  }
+
+  static navigationOptions = ({ navigation }) => {
+    const { params } = navigation.state
+
+    return {
+      title: params.title
+    }
   }
 
   static getDerivedStateFromProps(nextProps) {
@@ -24,7 +34,6 @@ class Deck extends Component {
 
     return Storage.getDeck(this.state.id)
       .then((deck) => {
-        console.log(deck)
         this.setState({ deck, loading: false })
       })
   }
@@ -35,21 +44,31 @@ class Deck extends Component {
     }
 
     return (
-      <View>
-        <Text>{this.state.deck.title}</Text>
-        <Text>{this.state.deck.questions.length} Cards</Text>
-        <TextButton text='Start Quiz' onPress={this.onStartQuizPress} />
-        <TextButton text='Add Question' onPress={this.onAddQuestionPress} />
+      <View style={styles.container}>
+        <View style={styles.textContainer}>
+          <Text style={styles.number}>{this.state.deck.questions.length} Card(s)</Text>
+        </View>
+        <View style={styles.controls}>
+          <TextButton style={{marginBottom: 10}}
+                      text='Start Quiz'
+                      bgColor={correct}
+                      textColor={buttonText}
+                      onPress={this.onStartQuizPress} />
+          <TextButton text='Add Card'
+                      bgColor={create}
+                      textColor={buttonText}
+                      onPress={this.onAddQuestionPress} />
+        </View>
       </View>
     )
   }
 
   onStartQuizPress = () => {
-    this.props.navigation.navigate('Quiz', {
+    this.props.navigation.push('Quiz', {
       deck: this.state.deck.title,
-      questions: this.state.deck.questions,
+      questions: shuffle(this.state.deck.questions),
       id: this.state.id,
-      goToDeck: this.state.goToDeck
+      goToDeck: this.state.goToDeck,
     })
   }
 
@@ -62,11 +81,30 @@ class Deck extends Component {
   }
 
   addQuestionCallback = () => {
-    this.fetchDeck()
-      .then(() => {
-        this.state.goToDeck(this.id)
-      })
+    return this.state.goToDeck(this.state.id)
   }
 }
+
+const styles = StyleSheet.create({
+  controls: {
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    flex: 2,
+  },
+  textContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  number: {
+    fontSize: 32,
+    color: uiText
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  }
+})
 
 export default Deck

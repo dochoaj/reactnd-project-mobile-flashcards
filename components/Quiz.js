@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, TouchableOpacity } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import QuizQuestion from './QuizQuestion'
 import QuizResult from './QuizResult'
 
@@ -8,6 +8,10 @@ export default class Quiz extends Component {
     current: 0,
     correct: 0,
     incorrect: 0,
+  }
+
+  static navigationOptions = {
+    title: 'Quiz'
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -22,7 +26,7 @@ export default class Quiz extends Component {
     const content = isFinished ? this.renderResult() : this.renderQuestion()
 
     return (
-      <View>
+      <View style={styles.container}>
         {content}
       </View>
     );
@@ -83,3 +87,11 @@ export default class Quiz extends Component {
     this.state.goToDeck(this.state.id)
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  }
+})

@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-import { View, Text, TextInput } from 'react-native'
+import { View, Text, TextInput, StyleSheet } from 'react-native'
 import TextButton from './TextButton'
 import Storage from '../utils/storage_api'
+import { create, buttonText, uiText, inputBorder } from '../utils/colors'
 
 export default class NewQuestion extends Component {
   state = {
@@ -17,15 +18,25 @@ export default class NewQuestion extends Component {
 
   render() {
     return (
-      <View>
-        <Text>Question:</Text>
-        <TextInput value={this.state.question}
-                   onChangeText={(question) => this.setState({ question })} />
-        <Text>Answer:</Text>
-        <TextInput value={this.state.answer}
-                   onChangeText={(answer) => this.setState({ answer })} />
-        <TextButton text='Submit'
-                    onPress={this.onSubmitPress} />
+      <View style={styles.container}>
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputLabel}>Question:</Text>
+          <TextInput style={styles.input}
+                     value={this.state.question}
+                     onChangeText={(question) => this.setState({ question })} />
+        </View>
+        <View style={[styles.inputContainer, { marginTop: 10 }]}>
+          <Text style={styles.inputLabel}>Answer:</Text>
+          <TextInput style={styles.input}
+                     value={this.state.answer}
+                     onChangeText={(answer) => this.setState({ answer })} />
+        </View>
+        <View style={styles.controls}>
+          <TextButton text='Submit'
+                      bgColor={create}
+                      textColor={buttonText}
+                      onPress={this.onSubmitPress} />
+        </View>
       </View>
     )
   }
@@ -38,3 +49,28 @@ export default class NewQuestion extends Component {
       })
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    marginTop: 10,
+    flex: 1,
+  },
+  inputContainer: {
+    paddingLeft: 10,
+    paddingRight: 10
+  },
+  inputLabel: {
+    fontSize: 16
+  },
+  input: {
+    borderBottomWidth: 1,
+    borderBottomColor: inputBorder,
+    marginTop: 5,
+    paddingBottom: 5,
+  },
+  controls: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 10
+  },
+})
