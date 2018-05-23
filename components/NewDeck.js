@@ -2,18 +2,11 @@ import React, { Component } from 'react'
 import { View, Text, TextInput } from 'react-native'
 import capitalize from 'capitalize'
 import TextButton from './TextButton'
+import Storage from '../utils/storage_api'
 
 export default class NewDeck extends Component {
   state = {
     text: ''
-  }
-
-  static getDerivedStateFromProps(nextProps, prevState) {
-    const { onCreateDeck } = nextProps.navigation.state.params
-
-    return {
-      ...prevState, onCreateDeck
-    }
   }
 
   render() {
@@ -23,12 +16,20 @@ export default class NewDeck extends Component {
         <TextInput value={this.state.text}
                    onChangeText={(text) => this.setState({ text })} />
         <TextButton text='Submit'
-                    onPress={() => {
-                      let { text } = this.state
-                      text = text.trim()
-                      text && this.state.onCreateDeck(capitalize(text), text)
-                    }} />
+                    onPress={this.onSubmit} />
       </View>
     )
+  }
+
+  onSubmit = () => {
+    let { text } = this.state
+    text = text.trim()
+    Storage.addDeck(text)
+      .then(() => {
+        return this.props.navigation.state.params.callback()
+      })
+      .then(() => {
+        return this.props.navigation.goBack()
+      })
   }
 }

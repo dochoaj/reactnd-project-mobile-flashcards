@@ -1,25 +1,43 @@
 import React, { Component } from 'react'
 import { View, Text } from 'react-native'
+import { AppLoading } from 'expo'
 import TextButton from './TextButton'
+import Storage from '../utils/storage_api'
 
 class Deck extends Component {
-  state = {}
+  state = {
+    deck: {},
+    loading: true
+  }
 
   static getDerivedStateFromProps(nextProps) {
-    return {
-      title: nextProps.navigation.getParam('title', ''),
-      questions: nextProps.navigation.getParam('questions', []),
-      id: nextProps.navigation.getParam('id', null),
-      goToDeck: nextProps.navigation.getParam('goToDeck'),
-      onCreateQuestion: nextProps.navigation.getParam('onCreateQuestion'),
-    }
+    const { id, goToDeck } = nextProps.navigation.state.params
+    return { id, goToDeck }
+  }
+
+  componentDidMount() {
+    this.fetchDeck()
+  }
+
+  fetchDeck = () => {
+    this.setState({ loading: true })
+
+    return Storage.getDeck(this.state.id)
+      .then((deck) => {
+        console.log(deck)
+        this.setState({ deck, loading: false })
+      })
   }
 
   render() {
+    if (this.state.loading) {
+      return <AppLoading />
+    }
+
     return (
       <View>
-        <Text>{this.state.title}</Text>
-        <Text>{this.state.questions.length} Cards</Text>
+        <Text>{this.state.deck.title}</Text>
+        <Text>{this.state.deck.questions.length} Cards</Text>
         <TextButton text='Start Quiz' onPress={this.onStartQuizPress} />
         <TextButton text='Add Question' onPress={this.onAddQuestionPress} />
       </View>
@@ -28,19 +46,26 @@ class Deck extends Component {
 
   onStartQuizPress = () => {
     this.props.navigation.navigate('Quiz', {
-      deck: this.state.title,
-      questions: this.state.questions,
+      deck: this.state.deck.title,
+      questions: this.state.deck.questions,
       id: this.state.id,
       goToDeck: this.state.goToDeck
     })
   }
 
   onAddQuestionPress = () => {
-    const { title, id, onCreateQuestion } = this.state
+    const { title, id, goToDeck } = this.state
 
     this.props.navigation.navigate('NewQuestion', {
-      deck: this.state.title, id, onCreateQuestion
+      deck: this.state.title, deckId: id, callback: this.addQuestionCallback
     })
+  }
+
+  addQuestionCallback = () => {
+    this.fetchDeck()
+      .then(() => {
+        this.state.goToDeck(this.id)
+      })
   }
 }
 

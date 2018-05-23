@@ -1,19 +1,18 @@
 import React, { Component } from 'react'
 import { View, Text, TextInput } from 'react-native'
 import TextButton from './TextButton'
+import Storage from '../utils/storage_api'
 
-export default class NewDeck extends Component {
+export default class NewQuestion extends Component {
   state = {
     question: '',
     answer: ''
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    const { id, onCreateQuestion } = nextProps.navigation.state.params
+    const { deckId, callback } = nextProps.navigation.state.params
 
-    return {
-      ...prevState, id, onCreateQuestion
-    }
+    return { ...prevState, deckId, callback }
   }
 
   render() {
@@ -32,8 +31,10 @@ export default class NewDeck extends Component {
   }
 
   onSubmitPress = () => {
-    const { id, question, answer, onCreateQuestion } = this.state
-
-    onCreateQuestion(id, question, answer)
+    const { deckId, question, answer } = this.state
+    Storage.addCard(deckId, { question, answer })
+      .then(() => {
+        this.state.callback()
+      })
   }
 }
