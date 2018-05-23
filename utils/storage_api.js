@@ -24,10 +24,15 @@ const getDeck = (key) => {
           })
 }
 
-const addDeck = (key, content = { questions: [] }) => {
+const addDeck = (title, content = { questions: [] }) => {
+  const deckKey = capitalize(title)
+  const deckContent = {...content, title: title}
+
   return AsyncStorage.mergeItem(DECK_STORAGE_KEY, JSON.stringify({
-    [capitalize(key)]: {...content, title: key}
-  }))
+    [deckKey]: deckContent
+  })).then(() => {
+    return {...deckContent, key: deckKey}
+  })
 }
 
 const addCard = (deckKey, card) => {

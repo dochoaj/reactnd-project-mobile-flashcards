@@ -25,11 +25,8 @@ export default class NewDeck extends Component {
     let { text } = this.state
     text = text.trim()
     Storage.addDeck(text)
-      .then(() => {
-        return this.props.navigation.state.params.callback()
-      })
-      .then(() => {
-        return this.props.navigation.goBack()
+      .then((deck) => {
+        return this.props.navigation.state.params.callback(deck.key)
       })
   }
 }

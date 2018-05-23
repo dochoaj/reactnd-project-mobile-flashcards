@@ -54,8 +54,13 @@ class DeckList extends Component {
 
   onCreateDeckPress = () => {
     this.props.navigation.navigate('NewDeck', {
-      callback: this.fetchDecks
+      callback: this.createDeckCallback
     })
+  }
+
+  createDeckCallback = (deckId) => {
+    this.fetchDecks()
+    this.goToDeck(deckId)
   }
 }
 
