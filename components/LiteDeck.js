@@ -14,7 +14,7 @@ class LiteDeck extends Component {
   }
 
   onPressDeck = () => {
-    // navigate
+    this.props.goToDeck(this.props.id)
   }
 }
 

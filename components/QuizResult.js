@@ -9,7 +9,7 @@ export default class QuizResult extends Component {
         <View>
           <Text>Correct: {this.props.correct}</Text>
           <Text>Incorrect: {this.props.incorrect}</Text>
-          <Text>Ratio: {this.props.correct / this.props.questions.length}
+          <Text>Ratio: {this.props.correct / this.props.questions.length}</Text>
         </View>
         <View>
           <TextButton text='Start Over'

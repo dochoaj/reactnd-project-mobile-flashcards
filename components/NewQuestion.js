@@ -8,6 +8,14 @@ export default class NewDeck extends Component {
     answer: ''
   }
 
+  static getDerivedStateFromProps(nextProps, prevState) {
+    const { id, onCreateQuestion } = nextProps.navigation.state.params
+
+    return {
+      ...prevState, id, onCreateQuestion
+    }
+  }
+
   render() {
     return (
       <View>
@@ -15,11 +23,17 @@ export default class NewDeck extends Component {
         <TextInput value={this.state.question}
                    onChangeText={(question) => this.setState({ question })} />
         <Text>Answer:</Text>
-        <TextInput value={this.state.question}
+        <TextInput value={this.state.answer}
                    onChangeText={(answer) => this.setState({ answer })} />
         <TextButton text='Submit'
-                    onPress={() => console.log(this.state)} />
+                    onPress={this.onSubmitPress} />
       </View>
     )
+  }
+
+  onSubmitPress = () => {
+    const { id, question, answer, onCreateQuestion } = this.state
+
+    onCreateQuestion(id, question, answer)
   }
 }

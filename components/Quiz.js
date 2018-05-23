@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import { View, Text, TouchableOpacity } from 'react-native'
+import QuizQuestion from './QuizQuestion'
+import QuizResult from './QuizResult'
 
 export default class Quiz extends Component {
   state = {
@@ -8,8 +10,15 @@ export default class Quiz extends Component {
     incorrect: 0,
   }
 
+  static getDerivedStateFromProps(nextProps, prevState) {
+    const { questions, deck, id, goToDeck } = nextProps.navigation.state.params
+    return {
+      ...prevState, questions, deck, id, goToDeck
+    }
+  }
+
   render() {
-    const isFinished = this.state.current + 1 === this.props.questions.length
+    const isFinished = this.state.current === this.state.questions.length
     const content = isFinished ? this.renderResult() : this.renderQuestion()
 
     return (
@@ -21,21 +30,21 @@ export default class Quiz extends Component {
 
   renderResult() {
     return (
-      <QuizResult deck={this.props.deck}
+      <QuizResult deck={this.state.deck}
                   correct={this.state.correct}
                   incorrect={this.state.incorrect}
-                  questions={this.props.questions}
+                  questions={this.state.questions}
                   startOver={this.startOver}
                   viewDeck={this.viewDeck} />
     )
   }
 
   renderQuestion() {
-    const currentQuestion = this.props.questions[this.state.current]
+    const currentQuestion = this.state.questions[this.state.current]
 
     return (
       <QuizQuestion index={this.state.current}
-                    total={this.props.questions.length}
+                    total={this.state.questions.length}
                     question={currentQuestion}
                     onIncorrect={this.onIncorrect}
                     onCorrect={this.onCorrect} />
@@ -71,6 +80,6 @@ export default class Quiz extends Component {
   }
 
   viewDeck = () => {
-    // Navigate to deck page
+    this.state.goToDeck(this.state.id)
   }
 }

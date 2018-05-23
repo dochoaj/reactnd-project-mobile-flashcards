@@ -1,13 +1,20 @@
 import React from 'react'
 import { View } from 'react-native'
-import DeckList from './components/DeckList'
+import { createStackNavigator } from 'react-navigation'
 
-export default class App extends React.Component {
-  render() {
-    return (
-      <View>
-        <DeckList />
-      </View>
-    );
-  }
-}
+import DeckList from './components/DeckList'
+import Deck from './components/Deck'
+import NewQuestion from './components/NewQuestion'
+import NewDeck from './components/NewDeck'
+import Quiz from './components/Quiz'
+
+export default createStackNavigator(
+  {
+    DeckList,
+    Deck,
+    NewDeck,
+    NewQuestion,
+    Quiz
+  }, {
+    initialRouteName: 'DeckList',
+  });

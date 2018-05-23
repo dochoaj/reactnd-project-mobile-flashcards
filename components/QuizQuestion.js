@@ -11,11 +11,7 @@ export default class QuizQuestion extends Component {
     return (
       <View>
         <Text>{this.props.index + 1}/{this.props.total}</Text>
-        <View>
-          <Text>{this.props.question.question}</Text>
-          <TextButton text='Answer'
-                      onPress={this.props.onAnswerTogglePress} />
-        </View>
+        { this.state.showAnswer ? this.renderAnswer() : this.renderQuestion() }
         <View>
           <TextButton text='Correct'
                       onPress={this.props.onCorrect}/>
@@ -30,7 +26,7 @@ export default class QuizQuestion extends Component {
     return (
       <View>
         <Text>{this.props.question.question}</Text>
-        <TouchableOpacity onPress={this.props.onAnswerTogglePress}>
+        <TouchableOpacity onPress={this.onAnswerTogglePress}>
           <Text>Answer</Text>
         </TouchableOpacity>
       </View>
@@ -41,7 +37,7 @@ export default class QuizQuestion extends Component {
     return (
       <View>
         <Text>{this.props.question.answer}</Text>
-        <TouchableOpacity onPress={this.props.onQuestionTogglePress}>
+        <TouchableOpacity onPress={this.onQuestionTogglePress}>
           <Text>Question</Text>
         </TouchableOpacity>
       </View>
