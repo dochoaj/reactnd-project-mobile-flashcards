@@ -19,6 +19,11 @@ class DeckList extends Component {
     title: 'Mobile Flashcards',
   }
 
+  // componentWillMount() {
+  //   Storage.cleanDecks()
+  //   Storage.cleanQuizLog()
+  // }
+
   componentDidMount() {
     this.fetchDecks()
 
