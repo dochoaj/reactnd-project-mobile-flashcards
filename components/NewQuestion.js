@@ -33,6 +33,7 @@ export default class NewQuestion extends Component {
         </View>
         <View style={styles.controls}>
           <TextButton text='Submit'
+                      disabled={this.state.answer.trim() === '' || this.state.question.trim() === ''}
                       bgColor={create}
                       textColor={buttonText}
                       onPress={this.onSubmitPress} />

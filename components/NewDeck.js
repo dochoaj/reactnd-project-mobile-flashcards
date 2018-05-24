@@ -25,6 +25,7 @@ export default class NewDeck extends Component {
         </View>
         <View style={styles.controls}>
           <TextButton text='Submit'
+                      disabled={this.state.text.trim() === ''}
                       bgColor={create}
                       textColor={buttonText}
                       onPress={this.onSubmit} />
