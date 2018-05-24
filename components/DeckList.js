@@ -5,6 +5,7 @@ import LiteDeck from './LiteDeck'
 import TextButton from './TextButton'
 import Storage from '../utils/storage_api'
 import { create, buttonText, uiText } from '../utils/colors'
+import { setLocalNotification, clearLocalNotification } from '../utils/notifications'
 
 class DeckList extends Component {
   state = {
@@ -14,6 +15,19 @@ class DeckList extends Component {
 
   static navigationOptions = {
     title: 'Mobile Flashcards',
+  }
+
+  componentDidMount() {
+    this.fetchDecks()
+
+    Storage.isQuizReadyToday()
+      .then((result) => {
+        if (result) {
+          return clearLocalNotification()
+        } else {
+          return clearLocalNotification().then(() => { setLocalNotification() })
+        }
+      })
   }
 
   fetchDecks = () => {

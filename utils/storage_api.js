@@ -1,10 +1,28 @@
 import { AsyncStorage } from 'react-native'
+import moment from 'moment'
 import capitalize from 'capitalize'
 
 export const DECK_STORAGE_KEY = 'MobileFlashcards:Decks'
+export const QUIZLOG_STORAGE_KEY = 'MobileFlashcards:QuizLog'
 
-const clean = () => {
+const cleanDecks = () => {
   return AsyncStorage.removeItem(DECK_STORAGE_KEY)
+}
+
+const cleanQuizLog = () => {
+  return AsyncStorage.removeItem(QUIZLOG_STORAGE_KEY)
+}
+
+const addQuizLog = () => {
+  return AsyncStorage.setItem(QUIZLOG_STORAGE_KEY, JSON.stringify(moment().format('YYYY-MM-DD')))
+}
+
+const isQuizReadyToday = () => {
+  return AsyncStorage.getItem(QUIZLOG_STORAGE_KEY)
+    .then(JSON.parse)
+    .then((date) => {
+      return date === moment().format('YYYY-MM-DD')
+    })
 }
 
 const getDecks = () => {
@@ -51,4 +69,4 @@ const addCard = (deckKey, card) => {
           })
 }
 
-export default { clean, getDecks, getDeck, addCard, addDeck }
+export default { cleanDecks, getDecks, getDeck, addCard, addDeck, cleanQuizLog, addQuizLog, isQuizReadyToday }

@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import QuizQuestion from './QuizQuestion'
 import QuizResult from './QuizResult'
+import Storage from '../utils/storage_api'
+import { clearLocalNotification } from '../utils/notifications'
 
 export default class Quiz extends Component {
   state = {
@@ -24,6 +26,10 @@ export default class Quiz extends Component {
   render() {
     const isFinished = this.state.current === this.state.questions.length
     const content = isFinished ? this.renderResult() : this.renderQuestion()
+
+    if (isFinished) {
+      Storage.addQuizLog().then(clearLocalNotification)
+    }
 
     return (
       <View style={styles.container}>
