@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { View, Text, FlatList, StyleSheet } from 'react-native'
+import { StackActions, NavigationActions } from 'react-navigation'
 import { AppLoading } from 'expo'
+
 import LiteDeck from './LiteDeck'
 import TextButton from './TextButton'
 import Storage from '../utils/storage_api'
@@ -80,6 +82,21 @@ class DeckList extends Component {
         ...this.state.decks[id], id,
         goToDeck: this.goToDeck,
       })
+    })
+  }
+
+  goToDeck = (id) => {
+    return this.fetchDecks().then(() => {
+      const actions = [
+        NavigationActions.navigate({ routeName: 'DeckList' }),
+        NavigationActions.navigate({
+          routeName: 'Deck',
+          params: { ...this.state.decks[id], id, goToDeck: this.goToDeck }
+        }),
+      ]
+
+      const resetAction = StackActions.reset({ actions, index: 1 })
+      return this.props.navigation.dispatch(resetAction)
     })
   }
 
